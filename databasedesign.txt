@@ -1,0 +1,50 @@
+CREATE TABLE Users (
+   user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    role ENUM('student', 'instructor', 'admin') NOT NULL
+);
+
+CREATE TABLE Courses (
+    course_id INT AUTO_INCREMENT PRIMARY KEY,
+    course_name VARCHAR(255) NOT NULL,
+    course_description TEXT
+);
+
+CREATE TABLE Classes (
+    class_id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id INT NOT NULL,
+    instructor_id INT NOT NULL,
+    class_start_date DATE NOT NULL,
+    class_end_date DATE NOT NULL,
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id),
+    FOREIGN KEY (instructor_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE Enrollments (
+    enrollment_id INT AUTO_INCREMENT PRIMARY KEY,
+    class_id INT NOT NULL,
+    student_id INT NOT NULL,
+    enrollment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (class_id) REFERENCES Classes(class_id),
+    FOREIGN KEY (student_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE Assignments (
+    assignment_id INT AUTO_INCREMENT PRIMARY KEY,
+    class_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    due_date DATE,
+    FOREIGN KEY (class_id) REFERENCES Classes(class_id)
+);
+
+CREATE TABLE Submissions (
+    submission_id INT AUTO_INCREMENT PRIMARY KEY,
+    assignment_id INT NOT NULL,
+    student_id INT NOT NULL,
+    grade DECIMAL(5, 2),
+    FOREIGN KEY (assignment_id) REFERENCES Assignments(assignment_id),
+    FOREIGN KEY (student_id) REFERENCES Users(user_id)
+);
